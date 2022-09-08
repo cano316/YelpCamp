@@ -7,10 +7,15 @@ const ejsMate = require('ejs-mate');
 const ExpressError = require('./utilities/ExpressError');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const User = require('./models/user')
+// Passport Strategy
+const localStrategy = require('passport-local');
 
 
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
 
 
 main().catch(e => console.log(e))
@@ -38,8 +43,15 @@ const sessionConfig = {
         httpOnly: true
     }
 }
-app.use(session(sessionConfig))
+app.use(session(sessionConfig));
 
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+// 4:50 of 511 video
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 // Views
 app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
@@ -54,8 +66,15 @@ app.use((req, res, next) => {
 
 // Campground Routes
 
+// app.get('/register', async (req, res) => {
+//     const user = new User({ email: 'cano@gmail.com', username: 'cano' });
+//     const newUser = await User.register(user, 'password');
+//     res.send(newUser);
+// })
+
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
+app.use('/', userRoutes)
 
 // Routes
 app.get('/', (req, res) => {
