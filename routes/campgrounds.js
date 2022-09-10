@@ -8,6 +8,7 @@ const Campground = require('../models/campground');
 const { application } = require('express');
 
 // Middleware
+const isLoggedIn = require('../middleware');
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
     if (error) {
@@ -18,20 +19,17 @@ const validateCampground = (req, res, next) => {
     }
 }
 
-// Flash Middleware
-
-
 router.get('/', catchAsync(async (req, res) => {
     // Find the 50 campgrounds from our DB
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds })
 }));
 
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('campgrounds/new');
 });
 
-router.post('/', validateCampground, catchAsync(async (req, res, next) => {
+router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
     const { campground } = req.body;
     const userGC = new Campground(campground);
     await userGC.save();
@@ -49,13 +47,13 @@ router.get('/:id', catchAsync(async (req, res, next) => {
     res.render('campgrounds/show', { campground: foundCG })
 }));
 
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     const foundCG = await Campground.findById(id);
     res.render('campgrounds/edit', { campground: foundCG })
 }));
 
-router.patch('/:id', validateCampground, catchAsync(async (req, res) => {
+router.patch('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const { campground } = req.body;
     const foundCG = await Campground.findByIdAndUpdate(id, campground, { runValidators: true, new: true });
@@ -64,11 +62,11 @@ router.patch('/:id', validateCampground, catchAsync(async (req, res) => {
 }));
 
 // Delete
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted campground.')
     res.redirect('/campgrounds')
 }));
 
-module.exports = router;
+module.exports = router; 
