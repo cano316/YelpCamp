@@ -1,4 +1,4 @@
-const isLoggedIn = (req, res, next) => {
+module.exports.isLoggedIn = (req, res, next) => {
     // console.log(req.user)
     if (!req.isAuthenticated()) {
         req.session.returnTo = req.originalUrl;
@@ -11,4 +11,11 @@ const isLoggedIn = (req, res, next) => {
     next();
 }
 
-module.exports = isLoggedIn;
+// module.exports = isLoggedIn;
+
+module.exports.checkReturnTo = (req, res, next) => {
+    if (req.session.returnTo) {
+        res.locals.returnTo = req.session.returnTo;
+    }
+    next();
+}

@@ -4,6 +4,7 @@ const router = express.Router();
 const catchAsync = require('../utilities/catchAsync');
 const User = require('../models/user');
 const passport = require('passport');
+const { checkReturnTo } = require('../middleware');
 
 
 
@@ -20,9 +21,10 @@ router.post('/register', catchAsync(async (req, res, next) => {
             if (err) {
                 return next(err)
             }
+            req.flash('success', 'Welcome to Yelp Camp');
+            res.redirect('/campgrounds');
         });
-        req.flash('success', 'Welcome to Yelp Camp');
-        res.redirect('/campgrounds');
+
     } catch (error) {
         req.flash('error', error.message);
         res.redirect('/register')
@@ -33,10 +35,9 @@ router.get('/login', (req, res) => {
     res.render('users/login')
 })
 
-router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), async (req, res) => {
+router.post('/login', checkReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), async (req, res) => {
     req.flash('success', 'Welcome back!');
-    const redirectURL = req.session.returnTo || '/campgrounds'
-    delete req.session.returnTo;
+    const redirectURL = res.locals.returnTo || '/campgrounds'
     res.redirect(redirectURL);
 
 })

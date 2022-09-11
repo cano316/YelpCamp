@@ -5,6 +5,7 @@ const catchAsync = require('../utilities/catchAsync');
 const ExpressError = require('../utilities/ExpressError');
 const Campground = require('../models/campground');
 const Review = require('../models/review');
+const { isLoggedIn } = require('../middleware');
 
 
 
@@ -24,11 +25,12 @@ const validateReview = (req, res, next) => {
 //else, id will be null, and then campground will be null.
 // await returns the value of a promise, in this case campground will be null, but we wont know/get an error
 // until we try access reviews, when we finally get an error message. 
-router.post('/', validateReview, catchAsync(async (req, res, next) => {
+router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     // res.send(`I see you want to leave a review for ${campground.title}`)
     const review = new Review(req.body.review);
+    // review.author = req.user._id;
     campground.reviews.push(review);
     await review.save();
     await campground.save();
@@ -36,7 +38,7 @@ router.post('/', validateReview, catchAsync(async (req, res, next) => {
     res.redirect(`/campgrounds/${id}`)
 }));
 // Delete a review
-router.delete('/:reviewId', catchAsync(async (req, res, next) => {
+router.delete('/:reviewId', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
