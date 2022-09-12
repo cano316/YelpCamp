@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
@@ -8,6 +9,7 @@ const ExpressError = require('./utilities/ExpressError');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+
 const User = require('./models/user')
 // Passport Strategy
 const localStrategy = require('passport-local');
@@ -34,7 +36,7 @@ app.use(express.static(__dirname + '/public'))
 app.use(flash());
 //Session
 const sessionConfig = {
-    secret: 'thisisasecret',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
