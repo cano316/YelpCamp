@@ -68,14 +68,7 @@ app.use((req, res, next) => {
     next();
 })
 
-// Campground Routes
-
-// app.get('/register', async (req, res) => {
-//     const user = new User({ email: 'cano@gmail.com', username: 'cano' });
-//     const newUser = await User.register(user, 'password');
-//     res.send(newUser);
-// })
-
+// Routes
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
 app.use('/', userRoutes)
@@ -83,7 +76,6 @@ app.use('/', userRoutes)
 // Routes
 app.get('/', (req, res) => {
     res.render('home');
-    req.flash('welcome', 'Welcome!')
 });
 
 
