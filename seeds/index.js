@@ -23,7 +23,24 @@ const seedDB = async () => {
         const c = new Campground({
             location: `${ranCity.city}, ${ranCity.state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
-            image: 'https://source.unsplash.com/collection/483251',
+            images: [
+                {
+                    url: 'https://res.cloudinary.com/dnibipwoi/image/upload/v1663274112/YelpCamp/cfdtgkkrdmpdrtdjtbk4.jpg',
+                    filename: 'YelpCamp/cfdtgkkrdmpdrtdjtbk4'
+                },
+                {
+                    url: 'https://res.cloudinary.com/dnibipwoi/image/upload/v1663274112/YelpCamp/z2nxol3g9wa6hwqihpnt.jpg',
+                    filename: 'YelpCamp/z2nxol3g9wa6hwqihpnt'
+                },
+                {
+                    url: 'https://res.cloudinary.com/dnibipwoi/image/upload/v1663274112/YelpCamp/q1rg6e26gzfztpliyihv.webp',
+                    filename: 'YelpCamp/q1rg6e26gzfztpliyihv'
+                },
+                {
+                    url: 'https://res.cloudinary.com/dnibipwoi/image/upload/v1663274112/YelpCamp/u6c7pxfeabxqtzqb1sym.jpg',
+                    filename: 'YelpCamp/u6c7pxfeabxqtzqb1sym'
+                }
+            ],
             description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
             author: '631bbddd1b32beca94efd744',
             price: ranPrice
