@@ -12,11 +12,13 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createNewCampground = async (req, res, next) => {
     const { campground } = req.body;
-    const userGC = new Campground(campground);
-    userGC.author = req.user._id;
-    await userGC.save();
+    const userCG = new Campground(campground);
+    userCG.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    userCG.author = req.user._id;
+    await userCG.save();
+    console.log(userCG)
     req.flash('success', 'Added new campground!');
-    res.redirect(`/campgrounds/${userGC._id}`);
+    res.redirect(`/campgrounds/${userCG._id}`);
 };
 
 module.exports.renderShowPage = async (req, res, next) => {
