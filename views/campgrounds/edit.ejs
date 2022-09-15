@@ -3,7 +3,7 @@
         <h1 class="text-center">Edit Campground</h1>
         <div class="col-6 offset-3">
             <form action="/campgrounds/<%= campground._id %>?_method=PATCH" method="POST" class="validated-form"
-                novalidate>
+                novalidate enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
                     <input type="text" name="campground[title]" id="title" class="form-control"
@@ -17,10 +17,8 @@
                     <div class="valid-feedback">Looks good!</div>
                 </div>
                 <div class="mb-3">
-                    <label for="image" class="form-label">Image URL</label>
-                    <input type="text" name="campground[image]" id="image" class="form-control"
-                        value="<%= campground.image %>" required>
-                    <div class="valid-feedback">Looks good!</div>
+                    <label for="images" class="form-label">Add Additional Images</label>
+                    <input class="form-control" type="file" id="images" name="images" multiple>
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
@@ -37,6 +35,18 @@
                         <div class="valid-feedback">Looks good!</div>
                         <span class="input-group-text">.00</span>
                     </div>
+                </div>
+                <div class="mb-3 container-fluid">
+                    <% campground.images.forEach((image, i )=> { %>
+                        <div class="thumbnail-container">
+                            <img src="<%= image.thumbnail %>" alt="" srcset="" class="img-thumbnail">
+                            <div class="form-check-inline">
+                                <input type="checkbox" id="image-<%= i %>" name="deleteImages[]"
+                                    value="<%= image.filename%>">
+                            </div>
+                            <label for="image-<%= i%>">Delete</label>
+                        </div>
+                        <% }); %>
                 </div>
                 <button type="submit" class="btn btn-success">Update Camp</button>
             </form>
