@@ -53,7 +53,7 @@ module.exports.updateCamp = async (req, res) => {
     if (req.body.deleteImages) {
         for (let filename of req.body.deleteImages) {
             await cloudinary.uploader.destroy(filename)
-        }
+        };
         await foundAndUpdatedCampground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
     }
     // const foundCG = await Campground.findByIdAndUpdate(id, campground, { runValidators: true, new: true });
