@@ -16,7 +16,7 @@ const sample = (arr) => {
 };
 const seedDB = async () => {
     await Campground.deleteMany({});
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 300; i++) {
         const ranNum = Math.floor(Math.random() * 1000) + 1;
         const ranCity = cities[ranNum]
         const ranPrice = Math.floor(Math.random() * 200) + 20;
@@ -25,7 +25,7 @@ const seedDB = async () => {
             title: `${sample(descriptors)} ${sample(places)}`,
             geometry: {
                 type: "Point",
-                coordinates: [-113.1331, 47.0202]
+                coordinates: [ranCity.longitude, ranCity.latitude]
             },
             images: [
                 {
