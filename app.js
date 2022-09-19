@@ -1,7 +1,6 @@
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
-
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,16 +17,18 @@ const helmet = require('helmet');
 const localStrategy = require('passport-local');
 // Mongo Sanitize
 const mongoSanitize = require('express-mongo-sanitize');
-
-
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
+const MongoStore = require('connect-mongo');
 
+
+
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 main().catch(e => console.log(e))
 async function main() {
-    await mongoose.connect('mongodb://localhost:27017/yelp-camp');
+    await mongoose.connect(dbUrl);
     console.log('Connected to MongoDB')
 };
 
@@ -39,10 +40,23 @@ app.use(methodOverride('_method'));
 app.use(express.static(__dirname + '/public'))
 // Use Flash
 app.use(flash());
+
+const secret = process.env.SECRET || 'thisshouldbeabettersecret';
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    secret,
+    touchAfter: 24 * 3600
+});
+
+store.on("error", function(e){
+    console.log("Session store error")
+})
 //Session
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: process.env.SESSION_SECRET,
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
